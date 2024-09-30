@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-class LoginImage extends StatelessWidget {
+class ImageUp extends StatelessWidget {
   final double topPadding;
-  const LoginImage({Key? key, required this.topPadding}) : super(key: key);
+
+  const ImageUp({Key? key, required this.topPadding}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,4 +18,5 @@ class LoginImage extends StatelessWidget {
       ),
     );
   }
+
 }

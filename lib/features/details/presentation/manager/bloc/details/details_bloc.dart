@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:category_app2/features/details/data/models/details_model.dart';
 import 'package:category_app2/features/details/domain/entities/details_entity.dart';
-import 'package:category_app2/features/details/models/details_model.dart';
-import 'package:category_app2/repostory/details/details_repository.dart';
+import 'package:category_app2/features/details/domain/repositories/i_details_reposatory.dart';
+import 'package:category_app2/features/details/domain/repositories/i_details_reposatory.dart';
+import 'package:category_app2/features/details/data/services/details_services.dart';
 
 import 'package:meta/meta.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -17,7 +19,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
       if (event is GetDetails) {
         emit(DetailsLoading());
         try {
-          final details = await DetailsRepository().getDetails(mealId);
+          final details = await DetailsService().fetchDetails(mealId);
           print(mealId);
           emit(DetailsSuccess(details: details));
         } catch (e) {

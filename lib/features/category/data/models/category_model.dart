@@ -19,4 +19,12 @@ class CategoryModel {
       description: json['strCategoryDescription'],
     );
   }
+   Map<String,dynamic>toJson(){
+    return {
+      'idCategory':id,
+     'strCategory':name,
+      'strCategoryThumb':thumbnailUrl,
+      'strCategoryDescription':description
+    };
+   }
 }

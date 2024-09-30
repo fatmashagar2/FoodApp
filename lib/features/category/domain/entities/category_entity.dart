@@ -10,13 +10,4 @@ class CategoryEntity {
     required this.thumbnailUrl,
     required this.description,
   });
-
-  factory CategoryEntity.fromJson(Map<String, dynamic> json) {
-    return CategoryEntity(
-      id: json['idCategory'],
-      name: json['strCategory'],
-      thumbnailUrl: json['strCategoryThumb'],
-      description: json['strCategoryDescription'],
-    );
-  }
 }

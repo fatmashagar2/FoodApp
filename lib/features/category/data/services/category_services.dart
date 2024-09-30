@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:category_app2/features/category/data/models/category_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../features/category/domain/entities/category_entity.dart';
+import '../../domain/entities/category_entity.dart';
 
 class CategoryService {
   Future<List<CategoryModel>> getCategories() async {

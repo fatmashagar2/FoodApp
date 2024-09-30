@@ -1,7 +1,7 @@
 import 'package:category_app2/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class LoginTextField extends StatelessWidget {
+class TextFieldAll extends StatelessWidget {
   final TextEditingController controller;
   final bool obscureText;
   final String? errorText;
@@ -9,8 +9,8 @@ class LoginTextField extends StatelessWidget {
   final IconData prefixIcon;
   final VoidCallback? onSuffixIconPressed;
   final IconData? suffixIcon;
-
-  const LoginTextField({
+  final TextInputType keyboardType;
+  const TextFieldAll({
     required this.controller,
     required this.labelText,
     required this.prefixIcon,
@@ -18,11 +18,15 @@ class LoginTextField extends StatelessWidget {
     this.errorText,
     this.onSuffixIconPressed,
     this.suffixIcon,
+    this.keyboardType = TextInputType.text,
+
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
+
       controller: controller,
       style:  TextStyle(
         color: AppColors.red

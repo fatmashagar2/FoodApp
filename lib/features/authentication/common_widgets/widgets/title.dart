@@ -1,10 +1,10 @@
 import 'package:category_app2/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class LoginTitle extends StatelessWidget {
+class TitleAll extends StatelessWidget {
   final String title;
 
-  const LoginTitle({Key? key, required this.title}) : super(key: key);
+  const TitleAll({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

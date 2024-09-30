@@ -12,6 +12,12 @@ class MealsModel {
 
     );
   }
-
+Map<String,dynamic>toJson(){
+    return {
+      'strMeal':strMeal,
+      'strMealThumb':strMealThumb,
+      'idMeal':idMeal
+    };
+}
   MealsModel({required this.strMeal, required this.strMealThumb, required this.idMeal});
 }

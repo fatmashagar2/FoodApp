@@ -1,10 +1,16 @@
-import 'package:category_app2/features/login/presentaion/pages/login_page.dart';
-import 'package:category_app2/features/login/presentaion/widgets/login_button.dart';
-import 'package:category_app2/features/login/presentaion/widgets/login_image.dart';
-import 'package:category_app2/features/login/presentaion/widgets/login_link.dart';
-import 'package:category_app2/features/login/presentaion/widgets/login_text_field.dart';
-import 'package:category_app2/features/login/presentaion/widgets/login_title.dart';
+import 'package:category_app2/core/utils/app_colors.dart';
+import 'package:category_app2/features/authentication/auth_cubit/auth_cubit.dart';
+import 'package:category_app2/features/authentication/auth_cubit/auth_states.dart';
+import 'package:category_app2/features/authentication/common_widgets/widgets/button.dart';
+import 'package:category_app2/features/authentication/common_widgets/widgets/image.dart';
+import 'package:category_app2/features/authentication/common_widgets/widgets/link.dart';
+import 'package:category_app2/features/authentication/common_widgets/widgets/text_field.dart';
+import 'package:category_app2/features/authentication/common_widgets/widgets/title.dart';
+import 'package:category_app2/features/authentication/login/presentaion/pages/login_page.dart';
+import 'package:category_app2/features/category/presentation/pages/category_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -32,6 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.initState();
     _emailController.addListener(_validateEmail);
     _passwordController.addListener(_validatePassword);
+    _phoneController.addListener(_validatePhone);
     _confirmPasswordController.addListener(_validateConfirmPassword);
   }
 
@@ -45,19 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
     });
-  }
-
-  void _validateName() {
-    final value = _nameController.text;
-    if (value.isEmpty) {
-      setState(() {
-        _nameError = 'Please enter your name';
-      });
-    } else {
-      setState(() {
-        _nameError = null;
-      });
-    }
   }
 
   void _validateEmail() {
@@ -83,6 +77,10 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _phoneError = 'Please enter your phone number';
       });
+    } else if (value.length != 11) {
+      setState(() {
+        _phoneError = 'Please enter correct phone number';
+      });
     } else {
       setState(() {
         _phoneError = null;
@@ -95,6 +93,10 @@ class _RegisterPageState extends State<RegisterPage> {
     if (value.isEmpty) {
       setState(() {
         _passwordError = 'Please enter your password';
+      });
+    } else if (value.length < 6) {
+      setState(() {
+        _passwordError = 'Password must greater than 6';
       });
     } else {
       setState(() {
@@ -132,105 +134,154 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffEFEBDA),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LoginImage(topPadding: 0),
-                LoginTitle(title: 'REGISTER'),
+    return BlocConsumer<AuthCubit, AuthStates>(
+        builder: (context, state) {
+          return Scaffold(
+              backgroundColor: AppColors.main,
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ImageUp(topPadding: 0),
+                      TitleAll(title: 'REGISTER'),
 
-                const SizedBox(height: 5),
+                      const SizedBox(height: 5),
 
-                // Name field
-                LoginTextField(
-                  controller: _nameController,
-                  labelText: 'Name',
-                  prefixIcon: Icons.person,
-                  errorText: _nameError,
-                  onSuffixIconPressed: () {},
+                      // Name field
+                      TextFieldAll(
+
+                        controller: _nameController,
+                        labelText: 'Name',
+                        prefixIcon: Icons.person,
+                        errorText: _nameError,
+                        onSuffixIconPressed: () {},
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Email field
+                      TextFieldAll(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                        labelText: 'Email',
+                        prefixIcon: Icons.email,
+                        errorText: _emailError,
+                        onSuffixIconPressed: () {},
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Phone field
+                      TextFieldAll(
+                        keyboardType:TextInputType.phone ,
+                        controller: _phoneController,
+                        labelText: 'Phone',
+                        prefixIcon: Icons.phone,
+                        errorText: _phoneError,
+                        onSuffixIconPressed: () {},
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Password field
+                      TextFieldAll(
+                        controller: _passwordController,
+                        labelText: 'Password',
+                        prefixIcon: Icons.lock,
+                        obscureText: _obscureTextPassword,
+                        errorText: _passwordError,
+                        suffixIcon: _obscureTextPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        onSuffixIconPressed: _togglePasswordVisibility,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Confirm Password field
+                      TextFieldAll(
+                        controller: _confirmPasswordController,
+                        labelText: 'Confirm Password',
+                        prefixIcon: Icons.lock,
+                        obscureText: _obscureTextConfirmPassword,
+                        errorText: _confirmPasswordError,
+                        suffixIcon: _obscureTextConfirmPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        onSuffixIconPressed: _toggleConfirmPasswordVisibility,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Register button
+                      Button(
+                        onPressed: BlocProvider.of<AuthCubit>(context).state is RegisterLoadingState
+                            ? null // Disable the button when loading
+                            : () {
+                          if (_formKey.currentState!.validate()) {
+                            BlocProvider.of<AuthCubit>(context).register(
+                              name: _nameController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              password: _passwordController.text,
+                            );
+                          }
+                        },
+                        child: BlocProvider.of<AuthCubit>(context).state is RegisterLoadingState
+                            ?     Center(child: SpinKitFadingCircle(color:AppColors.red, size: 50.0))
+                            : Text(
+                          'Register',
+                          style:  TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.main,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Login link
+                      Link(
+                        text: 'Already have an account? Login',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 20),
-
-                // Email field
-                LoginTextField(
-                  controller: _emailController,
-                  labelText: 'Email',
-                  prefixIcon: Icons.email,
-                  errorText: _emailError,
-                  onSuffixIconPressed: () {},
-                ),
-                const SizedBox(height: 20),
-
-                // Phone field
-                LoginTextField(
-                  controller: _phoneController,
-                  labelText: 'Phone',
-                  prefixIcon: Icons.phone,
-                  errorText: _phoneError,
-                  onSuffixIconPressed: () {},
-                ),
-                const SizedBox(height: 20),
-
-                // Password field
-                LoginTextField(
-                  controller: _passwordController,
-                  labelText: 'Password',
-                  prefixIcon: Icons.lock,
-                  obscureText: _obscureTextPassword,
-                  errorText: _passwordError,
-                  suffixIcon: _obscureTextPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  onSuffixIconPressed: _togglePasswordVisibility,
-                ),
-                const SizedBox(height: 20),
-
-                // Confirm Password field
-                LoginTextField(
-                  controller: _confirmPasswordController,
-                  labelText: 'Confirm Password',
-                  prefixIcon: Icons.lock,
-                  obscureText: _obscureTextConfirmPassword,
-                  errorText: _confirmPasswordError,
-                  suffixIcon: _obscureTextConfirmPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  onSuffixIconPressed: _toggleConfirmPasswordVisibility,
-                ),
-                const SizedBox(height: 20),
-
-                // Register button
-                LoginButton(
-                  text: 'Register',
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // Handle registration logic
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                // Login link
-                LoginLink(
-                  text: 'Already have an account? Login',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        },
+      listener: (context, state) {
+        if (state is RegisterSuccessState) {
+          Navigator.pushReplacementNamed(context, "/categories");
+        } else if (state is FailedState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Registration Failed', style: TextStyle(color: Colors.red)),
+                content: Text(state.message, style: TextStyle(color: Colors.black)),
+                actions: [
+                  TextButton(
+                    child: Text('OK', style: TextStyle(color: Colors.red)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
     );
+
   }
 }

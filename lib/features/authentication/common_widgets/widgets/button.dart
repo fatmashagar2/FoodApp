@@ -1,12 +1,10 @@
 import 'package:category_app2/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class LoginButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text; // Declare the text property as final
-
-  // Constructor with required parameters
-  LoginButton({required this.onPressed, required this.text});
+class Button extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final Widget child;
+ Button({required this.onPressed, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +21,7 @@ class LoginButton extends StatelessWidget {
             ),
           ),
           child: Center(
-            child: Text(
-              text, // Use the text variable directly
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: child,
           ),
         ),
       ),

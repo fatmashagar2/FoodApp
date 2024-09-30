@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:category_app2/features/meals/data/models/meals_model.dart';
 import 'package:category_app2/features/meals/domain/entities/meals_entity.dart';
-import 'package:category_app2/repostory/meals/meals_repository.dart';
-
+import 'package:category_app2/features/meals/domain/repositories/i_meal_repository.dart';
+import 'package:category_app2/features/meals/data/services/meals_services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:meta/meta.dart';
 
@@ -20,7 +20,7 @@ class MealsBloc extends Bloc<MealsEvent, MealsState> {
       if (event is Getitem) {
         emit(MealsLoading());
         try {
-          final mal = await MealsRepository().getMeals(categoryName);
+          final mal = await MealService().getAllItems(categoryName);
           emit(MealsSuccess(mal: mal, favoriteMealIds: favoriteMealIds));
         } catch (e) {
           emit(MealsFailure(error: "There is an error: ${e.toString()}"));

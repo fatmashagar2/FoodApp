@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:category_app2/features/details/data/models/details_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../features/details/domain/entities/details_entity.dart';
+import '../../domain/entities/details_entity.dart';
 
 class DetailsService {
  Future<List<DetailsModel>> fetchDetails(String mealId) async {
